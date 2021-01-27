@@ -1,6 +1,9 @@
 import org.apache.tools.ant.filters.ConcatFilter
 
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'com.google.secrets_gradle_plugin' version '0.4'
+}
 
 android {
     compileSdkVersion 29
@@ -11,18 +14,6 @@ android {
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
-
-        // Read the API key from ./secure.properties into R.string.maps_api_key
-        def secureProps = new Properties()
-        if (file("../../secure.properties").exists()) {
-            file("../../secure.properties")?.withInputStream { secureProps.load(it) }
-        }
-        buildConfigField("String", "PLACES_API_KEY", (secureProps.getProperty("PLACES_API_KEY") ?: "\"\""))
-
-        // To add your Maps API key to this project:
-        // 1. Create a file ./secure.properties
-        // 2. Add this line, where YOUR_API_KEY is your API key:
-        //        PLACES_API_KEY=YOUR_API_KEY
     }
     buildTypes {
         release {
@@ -63,7 +54,6 @@ task generateV3(type: Copy) {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.google.android.material:material:1.2.1'
 
     // GMS
@@ -71,13 +61,21 @@ dependencies {
 
     // V3
     v3Implementation name:'places-maps-sdk-3.1.0-beta', ext:'aar'
-    v3Implementation 'com.android.volley:volley:1.1.1'
-    v3Implementation 'com.google.android.gms:play-services-base:17.5.0'
-    v3Implementation 'com.google.android.gms:play-services-basement:17.5.0'
-    v3Implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    v3Implementation 'com.google.android.gms:play-services-location:17.1.0'
-    v3Implementation 'com.google.android.gms:play-services-tasks:17.2.0'
-    v3Implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
-    v3Implementation 'com.google.auto.value:auto-value-annotations:1.7.4'
-    v3Implementation 'com.google.code.gson:gson:2.8.6'
+//    v3Implementation 'com.android.volley:volley:1.1.1'
+//    v3Implementation 'com.google.android.gms:play-services-base:17.5.0'
+//    v3Implementation 'com.google.android.gms:play-services-basement:17.5.0'
+//    v3Implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+//    v3Implementation 'com.google.android.gms:play-services-location:17.1.0'
+//    v3Implementation 'com.google.android.gms:play-services-tasks:17.2.0'
+//    v3Implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+//    v3Implementation 'com.google.auto.value:auto-value-annotations:1.7.4'
+//    v3Implementation 'com.google.code.gson:gson:2.8.6'
+}
+
+secrets {
+    // To add your Places API key to this project:
+    // 1. Open the file local.properties
+    // 2. Add this line, where YOUR_API_KEY is your API key:
+    //        PLACES_API_KEY=YOUR_API_KEY
+    defaultPropertiesFileName 'local.defaults.properties'
 }
